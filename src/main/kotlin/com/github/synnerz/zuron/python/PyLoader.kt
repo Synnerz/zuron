@@ -13,8 +13,6 @@ object PyLoader : ILoader {
         interpreter = PythonInterpreter()
     }
 
-    override fun preInit() {}
-
     override fun init() {
         Zuron.foldersIn(Zuron.modulesPy).forEach {
             it.listFiles().forEach { ff ->
@@ -36,5 +34,10 @@ object PyLoader : ILoader {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun reload() {
+        interpreter.close()
+        super.reload()
     }
 }

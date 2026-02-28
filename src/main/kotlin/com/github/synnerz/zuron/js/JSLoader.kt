@@ -26,6 +26,18 @@ object JSLoader : ILoader {
     lateinit var requiresScope: CustomRequire
     lateinit var moduleProvider: ModuleScriptProvider
 
+    override fun setup() {
+        val ctx = JSContextFactory.enterContext()
+        val srcProvider = UrlModuleSourceProvider(listOf(Zuron.modulesJs.toURI()), listOf())
+        moduleProvider = StrongCachingModuleScriptProvider(srcProvider)
+        moduleScope = ImporterTopLevel(ctx)
+        evalScope = ImporterTopLevel(ctx)
+        requiresScope = CustomRequire(moduleProvider)
+        requiresScope.install(moduleScope)
+        requiresScope.install(evalScope)
+        Context.exit()
+    }
+
     override fun preInit() {
         wrapInContext {
             try {
@@ -49,18 +61,6 @@ object JSLoader : ILoader {
                     loadModule(ff)
             }
         }
-    }
-
-    override fun setup() {
-        val ctx = JSContextFactory.enterContext()
-        val srcProvider = UrlModuleSourceProvider(listOf(Zuron.modulesJs.toURI()), listOf())
-        moduleProvider = StrongCachingModuleScriptProvider(srcProvider)
-        moduleScope = ImporterTopLevel(ctx)
-        evalScope = ImporterTopLevel(ctx)
-        requiresScope = CustomRequire(moduleProvider)
-        requiresScope.install(moduleScope)
-        requiresScope.install(evalScope)
-        Context.exit()
     }
 
     override fun loadModule(file: File): Unit = wrapInContext {

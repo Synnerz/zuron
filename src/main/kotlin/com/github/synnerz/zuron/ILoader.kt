@@ -26,5 +26,9 @@ interface ILoader {
     /**
      * - Re-builds the engine
      */
-    fun reload() {}
+    fun reload() {
+        setup()
+        preInit()
+        init()
+    }
 }
