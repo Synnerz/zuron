@@ -25,9 +25,9 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 	modImplementation("net.fabricmc:fabric-language-kotlin:1.13.9+kotlin.2.3.10")
 
-	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("org.python:jython-standalone:2.7.4")
-	implementation("org.mozilla:rhino:1.9.1")
+	include implementation("org.luaj:luaj-jse:3.0.1")
+	include implementation("org.python:jython-standalone:2.7.4") // adds 40mb to the jar ):
+	include implementation("org.mozilla:rhino:1.9.1")
 }
 
 processResources {
