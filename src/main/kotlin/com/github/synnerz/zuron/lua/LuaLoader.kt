@@ -40,7 +40,9 @@ object LuaLoader {
 
     fun loadModule(file: File) {
         try {
-            globals.load(file.readText(Charsets.UTF_8), file.name).call()
+            val folderPath = file.parentFile.absolutePath.replace("\\", "/")
+            globals.load("package.path = package.path .. ';' .. '$folderPath/?.lua'").call()
+            globals.loadfile(file.absolutePath).call()
         } catch (e: Exception) {
             e.printStackTrace()
         }
