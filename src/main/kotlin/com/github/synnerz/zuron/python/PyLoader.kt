@@ -1,6 +1,6 @@
 package com.github.synnerz.zuron.python
 
-import com.github.synnerz.zuron.ILoader
+import com.github.synnerz.zuron.internal.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.python.core.PyString
 import org.python.util.PythonInterpreter

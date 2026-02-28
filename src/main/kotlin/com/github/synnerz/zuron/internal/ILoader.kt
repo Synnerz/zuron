@@ -1,4 +1,4 @@
-package com.github.synnerz.zuron
+package com.github.synnerz.zuron.internal
 
 import java.io.File
 

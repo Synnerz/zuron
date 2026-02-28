@@ -1,6 +1,6 @@
 package com.github.synnerz.zuron.js
 
-import com.github.synnerz.zuron.ILoader
+import com.github.synnerz.zuron.internal.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ImporterTopLevel

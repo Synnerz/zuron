@@ -1,6 +1,6 @@
 package com.github.synnerz.zuron.lua
 
-import com.github.synnerz.zuron.ILoader
+import com.github.synnerz.zuron.internal.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.luaj.vm2.Globals
 import org.luaj.vm2.LuaTable

@@ -4,6 +4,8 @@ import com.github.synnerz.zuron.js.JSLoader
 import com.github.synnerz.zuron.lua.LuaLoader
 import com.github.synnerz.zuron.python.PyLoader
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -31,6 +33,22 @@ object Zuron : ClientModInitializer {
 		JSLoader.init()
 		PyLoader.init()
 		LuaLoader.init()
+
+		ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+			// TODO:
+			//  disable - disables all engines
+			//  disable <engine> - disables single engine
+			//  reload <engine> - reloads single engine
+			//  (might not happen soon) reload <engine> <moduleName> - reloads single module
+			val cmd = ClientCommandManager.literal("zr")
+				.then(ClientCommandManager.literal("load").executes {
+					JSLoader.reload()
+					PyLoader.reload()
+					LuaLoader.reload()
+					1
+				})
+			dispatcher.register(cmd)
+		}
 	}
 
 	fun foldersIn(file: File): List<File> {
