@@ -5,9 +5,12 @@ import org.mozilla.javascript.Context
 import org.mozilla.javascript.ImporterTopLevel
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.commonjs.module.ModuleScriptProvider
+import org.mozilla.javascript.commonjs.module.Require
 import org.mozilla.javascript.commonjs.module.provider.StrongCachingModuleScriptProvider
 import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider
 import java.io.File
+import java.lang.reflect.Method
+import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -19,6 +22,7 @@ import kotlin.contracts.contract
 object JSLoader {
     lateinit var moduleScope: Scriptable
     lateinit var evalScope: Scriptable
+    lateinit var requiresScope: CustomRequire
     lateinit var moduleProvider: ModuleScriptProvider
 
     fun preInit() {
@@ -39,10 +43,9 @@ object JSLoader {
 
     fun init() {
         Zuron.foldersIn(Zuron.modulesJs).forEach {
-            // TODO: maybe make better or something
             it.listFiles().forEach { ff ->
-                if (ff.isDirectory) ff.listFiles().forEach { ff2 -> if (ff2.extension == "js") loadModule(ff2) }
-                if (ff.extension == "js") loadModule(ff)
+                if (ff.nameWithoutExtension == "index" && ff.extension == "js")
+                    loadModule(ff)
             }
         }
     }
@@ -53,13 +56,15 @@ object JSLoader {
         moduleProvider = StrongCachingModuleScriptProvider(srcProvider)
         moduleScope = ImporterTopLevel(ctx)
         evalScope = ImporterTopLevel(ctx)
+        requiresScope = CustomRequire(moduleProvider)
+        requiresScope.install(moduleScope)
+        requiresScope.install(evalScope)
         Context.exit()
     }
 
     fun loadModule(file: File): Unit = wrapInContext {
         try {
-            val s = it.compileString(file.readText(Charsets.UTF_8), file.name, 1, null)
-            s.exec(it, moduleScope)
+            requiresScope.loadModule(file.parentFile.name, file.toURI())
         } catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -82,5 +87,24 @@ object JSLoader {
             if (missingContext) Context.exit()
         }
     }
-    // TODO: find out if we actually need the custom requires
+
+    class CustomRequire(
+        moduleProvider: ModuleScriptProvider,
+    ) : Require(Context.getCurrentContext(), moduleScope, moduleProvider, null, null, false) {
+        // this reflection overhead is reaaal great
+        val getExportedModuleInterfaceRefl: Method = Require::class.java.getDeclaredMethod(
+            "getExportedModuleInterface",
+            Context::class.java,
+            String::class.java,
+            URI::class.java,
+            URI::class.java,
+            Boolean::class.java
+        ).apply {
+            trySetAccessible()
+        }
+
+        fun loadModule(cachedName: String, uri: URI): Scriptable {
+            return getExportedModuleInterfaceRefl.invoke(this, Context.getCurrentContext(), cachedName, uri, null, false) as Scriptable
+        }
+    }
 }
