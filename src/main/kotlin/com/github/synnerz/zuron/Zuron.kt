@@ -16,13 +16,15 @@ object Zuron : ClientModInitializer {
 
 	override fun onInitializeClient() {
 		JSLoader.setup()
-		JSLoader.preInit()
-		JSLoader.init()
 		PyLoader.setup()
-		PyLoader.preInit()
-		PyLoader.init()
 		LuaLoader.setup()
+
+		JSLoader.preInit()
+		PyLoader.preInit()
 		LuaLoader.preInit()
+
+		JSLoader.init()
+		PyLoader.init()
 		LuaLoader.init()
 	}
 
