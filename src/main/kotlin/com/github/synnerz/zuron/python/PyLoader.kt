@@ -16,8 +16,8 @@ object PyLoader {
     fun init() {
         Zuron.foldersIn(Zuron.modulesPy).forEach {
             it.listFiles().forEach { ff ->
-                if (ff.isDirectory) ff.listFiles().forEach { ff2 -> if (ff2.extension == "py") loadModule(ff2) }
-                if (ff.extension == "py") loadModule(ff)
+                if (ff.nameWithoutExtension == "main" && ff.extension == "py")
+                    loadModule(ff)
             }
         }
     }

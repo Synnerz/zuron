@@ -32,8 +32,8 @@ object LuaLoader {
     fun init() {
         Zuron.foldersIn(Zuron.modulesLua).forEach {
             it.listFiles().forEach { ff ->
-                if (ff.isDirectory) ff.listFiles().forEach { ff2 -> if (ff2.extension == "lua") loadModule(ff2) }
-                if (ff.extension == "lua") loadModule(ff)
+                if (ff.nameWithoutExtension == "main" && ff.extension == "lua")
+                    loadModule(ff)
             }
         }
     }
