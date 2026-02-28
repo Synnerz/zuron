@@ -30,6 +30,18 @@ object PyLoader : ILoader {
 
             interpreter.execfile(file.absolutePath)
 
+            val parentFile = file.parentFile
+            if (parentFile.isDirectory) {
+                parentFile.listFiles().forEach {
+                    // importing from a file creates a "<Name>$py.class" bytecode file
+                    //  we need to figure out where it is and delete it, surely these checks
+                    //  are enough to not cause an issue riiight ?
+                    if (!it.exists() || !it.isFile || !it.name.endsWith("\$py.class") || it.extension != "class")
+                        return@forEach
+                    it.delete()
+                }
+            }
+
             sys.path.remove(path)
         } catch (e: Exception) {
             e.printStackTrace()

@@ -18,6 +18,8 @@ object Zuron : ClientModInitializer {
 		// TODO: since py and lua have single global scope
 		//  it is possible for global variables to leak to each other
 		//  fix this later
+		// Why not call ILoader::reload ?
+		//  simple, we want these to run as shown in here rather than engine by engine
 		JSLoader.setup()
 		PyLoader.setup()
 		LuaLoader.setup()
