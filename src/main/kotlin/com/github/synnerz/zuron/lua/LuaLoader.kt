@@ -1,5 +1,6 @@
 package com.github.synnerz.zuron.lua
 
+import com.github.synnerz.zuron.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.luaj.vm2.Globals
 import org.luaj.vm2.LuaTable
@@ -8,14 +9,14 @@ import org.luaj.vm2.lib.OneArgFunction
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
 
-object LuaLoader {
+object LuaLoader : ILoader {
     lateinit var globals: Globals
 
-    fun setup() {
+    override fun setup() {
         globals = JsePlatform.standardGlobals()
     }
 
-    fun preInit() {
+    override fun preInit() {
         val table = LuaTable()
 
         table.set("type", object : OneArgFunction() {
@@ -29,7 +30,7 @@ object LuaLoader {
         globals.set("Java", table)
     }
 
-    fun init() {
+    override fun init() {
         Zuron.foldersIn(Zuron.modulesLua).forEach {
             it.listFiles().forEach { ff ->
                 if (ff.nameWithoutExtension == "main" && ff.extension == "lua")
@@ -38,7 +39,7 @@ object LuaLoader {
         }
     }
 
-    fun loadModule(file: File) {
+    override fun loadModule(file: File) {
         try {
             val folderPath = file.parentFile.absolutePath.replace("\\", "/")
             globals.load("package.path = package.path .. ';' .. '$folderPath/?.lua'").call()

@@ -1,5 +1,6 @@
 package com.github.synnerz.zuron.js
 
+import com.github.synnerz.zuron.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ImporterTopLevel
@@ -19,13 +20,13 @@ import kotlin.contracts.contract
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ctjs/blob/main/src/main/kotlin/com/chattriggers/ctjs/internal/engine/JSLoader.kt)
  */
-object JSLoader {
+object JSLoader : ILoader {
     lateinit var moduleScope: Scriptable
     lateinit var evalScope: Scriptable
     lateinit var requiresScope: CustomRequire
     lateinit var moduleProvider: ModuleScriptProvider
 
-    fun preInit() {
+    override fun preInit() {
         wrapInContext {
             try {
                 val script = it.compileString(
@@ -41,7 +42,7 @@ object JSLoader {
         }
     }
 
-    fun init() {
+    override fun init() {
         Zuron.foldersIn(Zuron.modulesJs).forEach {
             it.listFiles().forEach { ff ->
                 if (ff.nameWithoutExtension == "index" && ff.extension == "js")
@@ -50,7 +51,7 @@ object JSLoader {
         }
     }
 
-    fun setup() {
+    override fun setup() {
         val ctx = JSContextFactory.enterContext()
         val srcProvider = UrlModuleSourceProvider(listOf(Zuron.modulesJs.toURI()), listOf())
         moduleProvider = StrongCachingModuleScriptProvider(srcProvider)
@@ -62,7 +63,7 @@ object JSLoader {
         Context.exit()
     }
 
-    fun loadModule(file: File): Unit = wrapInContext {
+    override fun loadModule(file: File): Unit = wrapInContext {
         try {
             requiresScope.loadModule(file.parentFile.name, file.toURI())
         } catch (e: Throwable) {

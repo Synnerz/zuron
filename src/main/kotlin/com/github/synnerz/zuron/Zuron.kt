@@ -15,6 +15,9 @@ object Zuron : ClientModInitializer {
 	val modulesLua = File(configLocation, "zuron/lua").apply { mkdirs() }
 
 	override fun onInitializeClient() {
+		// TODO: since py and lua have single global scope
+		//  it is possible for global variables to leak to each other
+		//  fix this later
 		JSLoader.setup()
 		PyLoader.setup()
 		LuaLoader.setup()

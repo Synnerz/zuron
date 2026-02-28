@@ -1,20 +1,21 @@
 package com.github.synnerz.zuron.python
 
+import com.github.synnerz.zuron.ILoader
 import com.github.synnerz.zuron.Zuron
 import org.python.core.PyString
 import org.python.util.PythonInterpreter
 import java.io.File
 
-object PyLoader {
+object PyLoader : ILoader {
     lateinit var interpreter: PythonInterpreter
 
-    fun setup() {
+    override fun setup() {
         interpreter = PythonInterpreter()
     }
 
-    fun preInit() {}
+    override fun preInit() {}
 
-    fun init() {
+    override fun init() {
         Zuron.foldersIn(Zuron.modulesPy).forEach {
             it.listFiles().forEach { ff ->
                 if (ff.nameWithoutExtension == "main" && ff.extension == "py")
@@ -23,7 +24,7 @@ object PyLoader {
         }
     }
 
-    fun loadModule(file: File) {
+    override fun loadModule(file: File) {
         try {
             val sys = interpreter.systemState
             val path = PyString(file.parentFile.absolutePath)
