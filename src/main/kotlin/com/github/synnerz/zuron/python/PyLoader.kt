@@ -1,6 +1,7 @@
 package com.github.synnerz.zuron.python
 
 import com.github.synnerz.zuron.Zuron
+import org.python.core.PyString
 import org.python.util.PythonInterpreter
 import java.io.File
 
@@ -24,8 +25,13 @@ object PyLoader {
 
     fun loadModule(file: File) {
         try {
-            val script = interpreter.compile(file.readText(Charsets.UTF_8), file.name)
-            interpreter.exec(script)
+            val sys = interpreter.systemState
+            val path = PyString(file.parentFile.absolutePath)
+            sys.path.insert(0, path)
+
+            interpreter.execfile(file.absolutePath)
+
+            sys.path.remove(path)
         } catch (e: Exception) {
             e.printStackTrace()
         }
