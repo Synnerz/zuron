@@ -16,26 +16,27 @@ import java.util.concurrent.ConcurrentHashMap
  * [Link](https://github.com/ChatTriggers/ctjs/blob/main/src/main/kotlin/com/chattriggers/ctjs/engine/Register.kt)
  */
 object Register {
-    val customRegisters = ConcurrentHashMap<String, Any>()
-    val regs = ConcurrentHashMap<String, MutableList<Any>>()
+    val registers = ConcurrentHashMap<String, MutableList<Any>>()
 
     @JvmStatic
     fun register(name: String, method: Any) {
         val type = name.lowercase().trim()
-        regs.getOrPut(type, { mutableListOf() }).add(method)
+        registers.getOrPut(type, { mutableListOf() }).add(method)
     }
 
     @JvmStatic
     fun trigger(name: String, vararg args: Any?) {
         val type = name.lowercase().trim()
-        val methods = regs[type] ?: return
+        val methods = registers[type] ?: return
         methods.forEach { method ->
             when (method) {
                 is Callable -> wrapInContext {
                     Context.jsToJava(method.call(it, JSLoader.moduleScope, JSLoader.moduleScope, args), Any::class.java)
                 }
-                is LuaClosure -> if (method.isfunction()) method.invoke(LuaValue.varargsOf(args.map { CoerceJavaToLua.coerce(it) }.toTypedArray()))
-                is PyObject -> if (method.isCallable) method.__call__(args.map { Py.java2py(it) }.toTypedArray())
+                is LuaClosure -> if (method.isfunction())
+                    method.invoke(LuaValue.varargsOf(args.map { CoerceJavaToLua.coerce(it) }.toTypedArray()))
+                is PyObject -> if (method.isCallable)
+                    method.__call__(args.map { Py.java2py(it) }.toTypedArray())
 
             }
         }
