@@ -17,6 +17,20 @@ NOTE: these may change later on.
 # Is It Useful?
 The main plan was to have support for mixins so our users could just build their own events, sadly that is a bit more difficult than i expected so it currently does not and _seems_ kind of useless, one option is to use another mod's event system or something similar.
 
+# Loading Scripts
+Loading your scripts is simple:
+
+Head over to your `~/.minecraft` folder then into `config` and you should see a folder called `zuron` inside of this there should be 3 different folders named `js`, `py` and `lua`
+
+Open the folder of which your script's language is written (or one you want to use) on then create a new folder with your script name and the initial file.
+
+Initial file name is enforced by zuron due to it loading one single file instead of the entire directory, all you need to do is:
+* `JS` -> `index.js`
+* `PY` -> `main.py`
+* `Lua` -> `main.lua`
+
+yes sadly there is not a command currently to open the scripts folder
+
 # Snippets
 ## JavaScript
 NOTE: modern rhino engine only supports CommonJS imports
