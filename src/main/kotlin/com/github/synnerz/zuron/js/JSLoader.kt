@@ -20,7 +20,7 @@ import kotlin.contracts.contract
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ctjs/blob/main/src/main/kotlin/com/chattriggers/ctjs/internal/engine/JSLoader.kt)
  */
-object JSLoader : ILoader {
+object JSLoader : ILoader() {
     lateinit var moduleScope: Scriptable
     lateinit var evalScope: Scriptable
     lateinit var requiresScope: CustomRequire

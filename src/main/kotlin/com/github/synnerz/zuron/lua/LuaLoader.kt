@@ -9,7 +9,7 @@ import org.luaj.vm2.lib.OneArgFunction
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
 
-object LuaLoader : ILoader {
+object LuaLoader : ILoader() {
     lateinit var globals: Globals
 
     override fun setup() {

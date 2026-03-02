@@ -1,32 +1,37 @@
 package com.github.synnerz.zuron.internal
 
+import com.github.synnerz.zuron.Zuron
 import java.io.File
 
-interface ILoader {
+abstract class ILoader {
+    init {
+        Zuron.loadedEngines.add(this)
+    }
+
     /**
      * - Set up the actual engine
      */
-    fun setup()
+    abstract fun setup()
 
     /**
      * - Initialize any post engine tasks, for example adding a function to the global scope
      */
-    fun preInit() {}
+    open fun preInit() {}
 
     /**
      * - Load all the language directory's main files
      */
-    fun init()
+    abstract fun init()
 
     /**
      * - Loads a file and executes it instantly
      */
-    fun loadModule(file: File)
+    abstract fun loadModule(file: File)
 
     /**
      * - Re-builds the engine
      */
-    fun reload() {
+    open fun reload() {
         setup()
         preInit()
         init()

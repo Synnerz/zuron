@@ -6,7 +6,7 @@ import org.python.core.PyString
 import org.python.util.PythonInterpreter
 import java.io.File
 
-object PyLoader : ILoader {
+object PyLoader : ILoader() {
     lateinit var interpreter: PythonInterpreter
 
     override fun setup() {

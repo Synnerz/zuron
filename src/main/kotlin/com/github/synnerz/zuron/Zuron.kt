@@ -1,5 +1,6 @@
 package com.github.synnerz.zuron
 
+import com.github.synnerz.zuron.internal.ILoader
 import com.github.synnerz.zuron.js.JSLoader
 import com.github.synnerz.zuron.lua.LuaLoader
 import com.github.synnerz.zuron.python.PyLoader
@@ -15,6 +16,7 @@ object Zuron : ClientModInitializer {
 	val modulesJs = File(configLocation, "zuron/js").apply { mkdirs() }
 	val modulesPy = File(configLocation, "zuron/py").apply { mkdirs() }
 	val modulesLua = File(configLocation, "zuron/lua").apply { mkdirs() }
+	val loadedEngines = mutableListOf<ILoader>()
 
 	override fun onInitializeClient() {
 		// TODO: since py and lua have single global scope
