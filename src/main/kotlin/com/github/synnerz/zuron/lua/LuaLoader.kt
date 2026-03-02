@@ -7,13 +7,21 @@ import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
 import org.luaj.vm2.lib.OneArgFunction
 import org.luaj.vm2.lib.jse.JsePlatform
+import org.luaj.vm2.lib.jse.LuajavaLib
 import java.io.File
 
 object LuaLoader : ILoader() {
     lateinit var globals: Globals
 
+    class JavaLib : LuajavaLib() {
+        override fun classForName(name: String?): Class<*>? {
+            return Class.forName(name, true, this::class.java.classLoader)
+        }
+    }
+
     override fun setup() {
         globals = JsePlatform.standardGlobals()
+        globals.load(JavaLib())
     }
 
     override fun preInit() {
